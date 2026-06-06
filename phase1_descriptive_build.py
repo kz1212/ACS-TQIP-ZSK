@@ -45,7 +45,7 @@ DISCOVERY_EXCLUDE_TERMS = [
     'hypertensive retinopathy','routine','exam','prematurity'
 ]
 
-# Simple phase-1 injury strata hints. These are preliminary and for QC/descriptive discovery only.
+# Simple phase-1 injury strata hints. 
 EMERGENT_HINT_TERMS = [
     'rupture','avulsion','enucleation','optic nerve','intraocular foreign body','laceration',
     'open','globe','retina','cornea','sclera','choroid','hyphema','retrobulbar'
@@ -404,10 +404,10 @@ def phase1():
     if len(px_candidates) == 0:
         issues.append('No procedure candidates were identified from lookup discovery terms.')
     if timing_negative_count > 0:
-        issues.append(f'Negative elapsed-hour values found for {timing_negative_count} candidate operative encounters. These require later QC and likely reflect timing/coding limitations.')
+        issues.append(f'Negative elapsed-hour values found for {timing_negative_count} candidate operative encounters.')
     if len(transfer_severe_operable_candidate) > 0:
-        issues.append('Transfer patients are present in the severe operative candidate cohort and must remain excluded from the future primary direct-arrival timing model.')
-    issues.append('Major issue encountered and corrected during Phase 1: hospital/procedure hour fields are stored as decimal hours, not integers. The script was revised to parse these fields as floats. Early timing-QC output generated before this correction should not be used.')
+        issues.append('Transfer patients are present in the severe operative candidate cohort - should be /remain excluded.')
+    issues.append('Major issue encountered and corrected during Phase 1: hospital/procedure hour fields are stored as decimal hours. (Oh no.)')
 
     # Summary tables
     summary['phase1_counts'] = {
@@ -458,7 +458,7 @@ def phase1():
     report_lines.append('PHASE 1 DESCRIPTIVE BUILD REPORT')
     report_lines.append(f'Run timestamp: {RUN_TS}')
     report_lines.append('')
-    report_lines.append('Scope note: Phase 1 uses broad lookup-driven discovery lists for candidate ocular/orbital diagnoses and procedures. These outputs are for descriptive discovery and audit only; they do not define the final analytic cohort.')
+    report_lines.append('Scope note: Phase 1 uses broad lookup-driven discovery lists for candidate ocular/orbital diagnoses and procedures.')
     report_lines.append('')
     report_lines.append('FILE INVENTORY')
     for name, meta in summary['files'].items():
@@ -484,7 +484,7 @@ def phase1():
         report_lines.append('- No major issues recorded in Phase 1.')
     report_lines.append('')
     report_lines.append('IMPORTANT INTERPRETIVE NOTE')
-    report_lines.append('- Broad lookup discovery remains intentionally overinclusive. Final cohort validity requires clinician approval of diagnosis, procedure, and severity definitions before later phases.')
+    report_lines.append('- Broad lookup discovery remains intentionally overinclusive.')
     write_txt(OUT / 'phase1_report.txt', '\n'.join(report_lines) + '\n')
 
     # Save run log
