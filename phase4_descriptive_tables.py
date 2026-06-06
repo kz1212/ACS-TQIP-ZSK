@@ -72,15 +72,13 @@ def main():
     issues = []
     assumptions = [
         'Phase 4 uses the Phase 3 primary timing dataset as the main restricted analysis-ready cohort.',
-        'Primary timing cohort excludes negative elapsed-time records and is direct-arrival only.',
-        'Given Phase 3.5 findings, orbital/adnexal-dominant reporting is emphasized and emergent ocular counts are interpreted descriptively.',
-    ]
+        'Primary timing cohort excludes negative elapsed-time records and is direct-arrival only.'    ]
 
     primary = load_csv(PHASE3 / 'phase3_primary_timing_dataset.csv')
     locked = load_csv(PHASE3 / 'phase3_locked_operable_dataset.csv')
     face = json.loads((PHASE35 / 'phase35_face_validity_summary.json').read_text())
 
-    # Restricted modeling-ready cohort: orbital/adnexal + mixed only, keep emergent summarized separately.
+    # Restricted modeling-ready cohort: orbital/adnexal + mixed only
     model_ready = [r for r in primary if r['stratum'] in {'orbital_adnexal', 'mixed_emergent_priority'}]
     emergent_desc = [r for r in primary if r['stratum'] == 'emergent_ocular']
 
@@ -135,15 +133,15 @@ def main():
 
     # Readiness assessment
     if len(model_ready) < 500:
-        issues.append('Model-ready restricted cohort is smaller than expected and may constrain multivariable complexity.')
+        issues.append('Model-ready restricted cohort is smaller than expected.')
     if len(emergent_desc) < 10:
-        issues.append('Emergent ocular cases remain too sparse for stable primary modeling and should remain descriptive/sensitivity only.')
+        issues.append('Emergent ocular cases remain too sparse for stable primary modeling.')
     nonmiss_gcsmotor = next((x['pct_nonmissing'] for x in completeness_model_ready if x['variable']=='gcsmotor'), None)
     if nonmiss_gcsmotor is not None and nonmiss_gcsmotor < 70:
-        issues.append('GCS motor completeness is limited and may complicate planned neurologic adjustment.')
+        issues.append('GCS motor completeness is limited. ')
 
     recommendation = 'ready_for_restricted_modeling'
-    recommendation_text = ('ready')
+    recommendation_text = ('Ready!')
 
     out = {
         'run_timestamp': run_ts,
@@ -168,7 +166,7 @@ def main():
     with open(OUT / 'phase4_report.txt', 'w', encoding='utf-8') as f:
         f.write('PHASE 4 ANALYSIS-READY DESCRIPTIVE TABLES AND MODELING SETUP REPORT\n')
         f.write(f'Run timestamp: {run_ts}\n\n')
-        f.write('This phase generated analysis-ready descriptive summaries from the restricted primary timing cohort and assessed readiness for modeling.\n\n')
+        f.write('Generated analysis-ready descriptive summaries from the restricted primary timing cohort and assessed readiness for modeling.\n\n')
         f.write('COHORT SIZES\n')
         for k,v in out['cohort_sizes'].items():
             f.write(f'- {k}: {v}\n')
