@@ -143,9 +143,7 @@ def main():
         issues.append('GCS motor completeness is limited and may complicate planned neurologic adjustment.')
 
     recommendation = 'ready_for_restricted_modeling'
-    recommendation_text = (
-        'The dataset is ready for restricted modeling focused on the direct-arrival primary timing cohort, with orbital/adnexal-dominant analysis and emergent ocular reported descriptively or as sensitivity only.'
-    )
+    recommendation_text = ('ready')
 
     out = {
         'run_timestamp': run_ts,
