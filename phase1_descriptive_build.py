@@ -6,10 +6,13 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from datetime import datetime
 
-BASE = Path('/Users/Zaid/Desktop/PUF AY 2024/CSV')
-OUT = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase1/outputs')
-LOG = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase1/logs')
-DOC = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase1/docs')
+
+#PATH MUST MATCH FILE LOCATION, THESE MUST BE EDITED IF ATTEMPTING TO REPLICATE
+#Outputs set to Desktop at present 
+BASE = Path('/Users/___/Desktop/PUF AY 2024/CSV')
+OUT = Path('/Users/___/Desktop/tqip_ocular_study_phase1/outputs')
+LOG = Path('/Users/___/Desktop/tqip_ocular_study_phase1/logs')
+DOC = Path('/Users/___/Desktop/tqip_ocular_study_phase1/docs')
 
 FILES = {
     'trauma': BASE / 'PUF_TRAUMA.csv',
@@ -166,10 +169,9 @@ def phase1():
         'files': {},
         'assumptions': [
             'Phase 1 uses broad lookup-driven discovery lists for candidate ocular/orbital diagnoses and procedures.',
-            'Phase 1 outputs do not define the final analytic cohort and require clinician approval before Phase 2.',
-            'Primary timing analyses in later phases are intended for direct arrivals only.',
+            'Phase 1 outputs do not define the final analytic cohort.',
             'Timing variables with invalid BIU flags will be excluded from timing analyses in later phases.',
-            'Observed time fields in this dataset appear to store decimal hours rather than whole-hour integers; Phase 1 therefore parses hour fields as floats.',
+            'Observed time fields in this dataset appear to store decimal hours rather than whole-hour integers; Phase 1 parses hour fields as floats.',
         ],
         'issues': issues,
     }
@@ -448,10 +450,10 @@ def phase1():
         'ais': top_ais,
     }
 
-    # Save machine-readable summary
+    # Save full-readable summary
     write_json(OUT / 'phase1_summary.json', summary)
 
-    # Save clinician-readable report
+    # Save human readable report
     report_lines = []
     report_lines.append('PHASE 1 DESCRIPTIVE BUILD REPORT')
     report_lines.append(f'Run timestamp: {RUN_TS}')
@@ -490,12 +492,9 @@ def phase1():
 
     # Save assumptions doc
     assumptions = [
-        'All analysis in Phase 1 was performed from raw CSV files in /Users/Zaid/Desktop/PUF AY 2024/CSV.',
+        'All analysis in Phase 1 was performed from raw CSV files in /Users/___/Desktop/PUF AY 2024/CSV.',
         'Encounter linkage assumes inc_key/Inc_Key refers to the same trauma encounter across files.',
-        'Diagnosis and procedure candidate universes were generated using broad text discovery in lookup descriptions and are not final clinical definitions.',
         'ISS>=16 is used in Phase 1 as a descriptive severe-trauma screen only and not as the finalized severe polytrauma definition.',
-        'Transfer patients remain in descriptive counts but are not intended for the future primary direct-arrival timing model.',
-        'Negative elapsed-hour values may reflect data-quality limitations, timing conventions, or candidate-procedure misclassification and require later review.'
     ]
     write_txt(DOC / 'phase1_assumptions.txt', '\n'.join(f'- {a}' for a in assumptions) + '\n')
 
