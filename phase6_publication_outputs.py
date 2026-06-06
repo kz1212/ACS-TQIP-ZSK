@@ -3,9 +3,9 @@ import csv, json, math
 from pathlib import Path
 from datetime import datetime
 
-PHASE3 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase3/outputs')
-PHASE4 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase4/outputs')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase6')
+PHASE3 = Path('/Users/___/Desktop/tqip_ocular_study_phase3/outputs')
+PHASE4 = Path('/Users/___/Desktop/tqip_ocular_study_phase4/outputs')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase6')
 OUT = WORK / 'outputs'
 RAW = WORK / 'raw_tables'
 LOG = WORK / 'logs'
@@ -258,7 +258,6 @@ Run timestamp: {run_ts}
 ## Source files referenced
 - {PHASE3 / 'phase3_summary.json'}
 - {PHASE4 / 'phase4_descriptive_summary.json'}
-- {PHASE5 / 'phase5_model_summary.json'}
 
 
 """
