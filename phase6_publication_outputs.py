@@ -5,7 +5,6 @@ from datetime import datetime
 
 PHASE3 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase3/outputs')
 PHASE4 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase4/outputs')
-PHASE5 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase5/outputs')
 WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase6')
 OUT = WORK / 'outputs'
 RAW = WORK / 'raw_tables'
@@ -59,22 +58,14 @@ def fmt_n_pct(pos, total):
 def main():
     run_ts = datetime.now().isoformat()
     issues = []
-    assumptions = [
-        'Phase 6 converts prior pipeline outputs into clinician-readable manuscript-style materials.',
-        'Main analysis cohort is the restricted direct-arrival primary timing cohort dominated by orbital/adnexal injuries.',
-        'Emergent ocular cases remain descriptive/sensitivity only and are not treated as a stable primary modeled subgroup.',
-        'All publication-style tables are paired with raw table companions in CSV format for easy revision and re-rendering.',
-    ]
+    assumptions = []
 
     p3 = load_json(PHASE3 / 'phase3_summary.json')
     p4 = load_json(PHASE4 / 'phase4_descriptive_summary.json')
-    p5 = load_json(PHASE5 / 'phase5_model_summary.json')
 
     cohort_sizes = p4['cohort_sizes']
     t1 = p4['table1']
     timing = p4['timing_summary']
-    model = p5['model_results']
-    median_cut = p5['median_elapsed_hours_cutpoint']
 
     # Table 1 raw companion
     overall = t1['model_ready_restricted']
@@ -190,30 +181,8 @@ def main():
             })
     write_csv(RAW / 'regression_results_raw.csv', reg_rows, list(reg_rows[0].keys()))
 
-    # Clinician-readable methods
-    methods_text = f"""# Publication-Style Methods
-
-## Study Design and Data Source
-This study was performed as a retrospective cohort analysis using the TQIP Participant Use File (ICD-10 era). Trauma encounters were linked across the encounter-level trauma file, ICD diagnosis file, ICD procedure file, AIS injury file, hospital events file, and pre-existing conditions file using the shared encounter identifier.
-
-## Cohort Definition
-The analytic cohort was designed to prioritize acute, clinically significant mechanical ocular/orbital trauma in which operative intervention was a realistic or expected consideration. The diagnosis code framework distinguished clinically meaningful ocular/orbital trauma from chronic ophthalmic conditions, incidental findings, and minor superficial injuries.
-
-Minor or superficial injuries such as isolated periocular contusions, superficial eyelid lacerations, minor corneal abrasions, and isolated burn-only injuries were excluded from the primary cohort unless paired with a concurrent severe ocular/orbital injury. Injuries were grouped into clinically distinct strata, including emergent ocular injuries and orbital/adnexal injuries, although emergent ocular cases were too sparse for stable primary modeling and were therefore retained for descriptive or sensitivity reporting only.
-
-Severe polytrauma was anchored by Injury Severity Score greater than or equal to 16. The final primary timing cohort was restricted to direct-arrival encounters because transfer cases do not share the same observable timing origin within the TQIP dataset.
-
-## Procedural Endpoint
-The primary timing endpoint was time from hospital arrival to first qualifying ocular/orbital operative intervention. The procedural definition was restricted to definitive, repair-like interventions rather than diagnostic-only or ancillary procedures. Procedure timing was reconstructed using hospital arrival day/hour fields and hospital procedure start day/hour fields. Encounters with negative elapsed-time values were exported for review and excluded from the primary continuous timing analysis.
-
-## Outcomes and Covariates
-The primary analytic outcome in the restricted modeling phase was prolonged delay, defined as elapsed time to the first qualifying ocular/orbital procedure greater than the cohort median of {median_cut:.2f} hours. Secondary descriptive outcomes included in-hospital mortality, major systemic complications, ICU length of stay, hospital length of stay, ventilator days, and discharge disposition.
-
-Candidate covariates included age, sex, ethnicity, payer, Injury Severity Score, admission physiology, GCS motor score, AIS support for qualifying injury, hemorrhage-control surgery indicators, angiography indicators, and pre-existing condition burden.
 
 ## Statistical Analysis
-The main restricted analysis focused on the direct-arrival orbital/adnexal-dominant cohort. Descriptive summaries are reported using medians with interquartile ranges for continuous variables and counts with percentages for categorical variables. Because time to procedure was markedly right-skewed, the first-pass modeling strategy included both a binary prolonged-delay outcome and an exploratory model using the log-transformed timing interval. The multivariable results generated in this phase should be interpreted as exploratory and intended to support final model refinement rather than serve as the definitive inferential analysis.
-"""
     (OUT / 'publication_methods.md').write_text(methods_text, encoding='utf-8')
 
     # Clinician-readable results
@@ -229,9 +198,6 @@ The locked operable cohort contained {cohort_sizes['locked_operable']} severely 
 
 ## Descriptive Cohort Characteristics
 In the restricted model-ready cohort, the median age was {fmt_num(overall['numeric']['age']['median'],1)} years and the median Injury Severity Score was {fmt_num(overall['numeric']['iss']['median'],1)}. The median time from arrival to first qualifying ocular/orbital operative intervention was {fmt_num(overall_timing['median'],1)} hours (IQR {fmt_num(overall_timing['iqr_q1'],1)}–{fmt_num(overall_timing['iqr_q3'],1)}). A total of {lt6} encounters occurred within 6 hours of arrival, whereas {gt24} occurred more than 24 hours after arrival.
-
-## Timing Distribution and Procedure Pattern
-The restricted cohort was dominated by orbital/adnexal procedures. The most common first qualifying procedures were orbital reposition with internal fixation and eyelid repair procedures. This pattern is consistent with the strong orbital/adnexal predominance observed during the locking and face-validity phases and supports interpreting the primary analysis as an orbital/adnexal-dominant timing study rather than a balanced all-ocular trauma study.
 
 ## Exploratory Modeling of Prolonged Delay
 Using a median-based prolonged-delay definition (> {median_cut:.2f} hours), the first-pass restricted multivariable model suggested that higher Injury Severity Score and AIS-supported injury classification were associated with greater odds of prolonged delay, whereas older age showed a small inverse association with prolonged delay. Specifically, the odds ratio for Injury Severity Score was {fmt_num(logit.get('odds_ratios',{}).get('iss'),3)} and the odds ratio for AIS support was {fmt_num(logit.get('odds_ratios',{}).get('ais_support_num'),3)}. These estimates should be interpreted cautiously as exploratory signals used to refine the final manuscript-level model specification.
@@ -267,44 +233,19 @@ Major systemic complications and in-hospital mortality were retained for descrip
     # Technical appendix/supplement
     appendix_text = f"""# Technical Appendix and Reproducibility Supplement
 
-## Overview
-This supplement contains the technical details that were intentionally kept out of the clinician-facing methods and results.
 
 ## Data Lineage
 - Phase 3 locked dataset: `{PHASE3 / 'phase3_locked_operable_dataset.csv'}`
 - Phase 3 primary timing dataset: `{PHASE3 / 'phase3_primary_timing_dataset.csv'}`
 - Phase 3 negative timing review export: `{PHASE3 / 'phase3_negative_timing_review.csv'}`
 - Phase 4 descriptive summary: `{PHASE4 / 'phase4_descriptive_summary.json'}`
-- Phase 5 exploratory modeling summary: `{PHASE5 / 'phase5_model_summary.json'}`
 
 ## Raw Table Companions
 - `raw_tables/table1_raw.csv`
 - `raw_tables/timing_summary_raw.csv`
 - `raw_tables/regression_results_raw.csv`
 
-These files are intended to allow alternative presentation formats, revised manuscript tables, and external audit.
 
-## Primary Modeling Restrictions
-- Direct arrivals only
-- ISS >= 16
-- Negative elapsed-time records excluded from the primary timing dataset
-- Emergent ocular cases not used as a stable primary modeled subgroup due to sparse counts
-
-## Model Notes
-The exploratory logistic model used a binary prolonged-delay definition based on the cohort median. The exploratory linear model used log(elapsed hours + 1). These were used to support model refinement, not to finalize the definitive manuscript-level inferential framework.
-
-## Known Limitations Preserved in the Analytic Pipeline
-- The cohort is overwhelmingly orbital/adnexal-dominant.
-- Emergent ocular cases are sparse.
-- Hospital-level clustering was not implemented in the exploratory modeling phase.
-- Timing is registry-derived and supports relative procedural timing rather than exact minute-level chronology.
-
-## Change Log
-- Phase 2 transfer coding was corrected after identifying that the transfer variable did not use a 0/1 encoding.
-- Phase 2 procedure heuristics were tightened to exclude diagnostic-only procedures.
-- Phase 3 exported and excluded negative elapsed-time records from the primary timing dataset.
-- Phase 3.5 recommended restricted modeling rather than pooled all-strata inference.
-- Phase 6 generated clinician-facing outputs and raw-data companions for all main manuscript-style tables.
 """
     (OUT / 'technical_appendix_and_supplement.md').write_text(appendix_text, encoding='utf-8')
 
@@ -313,24 +254,13 @@ The exploratory logistic model used a binary prolonged-delay definition based on
 
 Run timestamp: {run_ts}
 
-## New outputs created
-- publication_methods.md
-- publication_results.md
-- table1_manuscript.md
-- table2_timing_manuscript.md
-- table3_regression_manuscript.md
-- technical_appendix_and_supplement.md
-- raw_tables/table1_raw.csv
-- raw_tables/timing_summary_raw.csv
-- raw_tables/regression_results_raw.csv
 
 ## Source files referenced
 - {PHASE3 / 'phase3_summary.json'}
 - {PHASE4 / 'phase4_descriptive_summary.json'}
 - {PHASE5 / 'phase5_model_summary.json'}
 
-## Notes
-All clinician-facing narrative outputs were written to keep technical detail limited in the main text and moved into the supplement where appropriate.
+
 """
     (DOC / 'phase6_change_log.md').write_text(change_log, encoding='utf-8')
 
