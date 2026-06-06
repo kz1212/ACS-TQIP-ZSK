@@ -102,7 +102,7 @@ def main():
             biggest=max(nonempty); smallest=min(nonempty)
             highly_imbalanced = smallest < 30 or biggest/max(smallest,1) > 10
     if highly_imbalanced:
-        issues.append('TQIPSITE is technically present but highly imbalanced (997 vs 22 rows), so cluster-robust inference would be unstable and is not adopted as the main reported model in this phase.')
+        issues.append('TQIPSITE is technically present but highly imbalanced')
     elif not cluster_feasible:
         issues.append('Site clustering was not feasible based on available site distribution and is not adopted in the main reported model.')
 
@@ -177,40 +177,12 @@ def main():
     # Updated clinician-readable methods/results/tables
     methods=f"""# Updated Publication-Style Methods (Final Parsimonious Model)
 
-## Study Design and Cohort
-This retrospective cohort study used the TQIP Participant Use File (ICD-10 era) to evaluate timing of qualifying ocular/orbital operative intervention among severely injured trauma patients. The primary analytic cohort was restricted to direct-arrival encounters with Injury Severity Score greater than or equal to 16, clinically meaningful mechanical ocular/orbital trauma, and a qualifying repair-like ocular/orbital procedure. Negative elapsed-time records were excluded from the primary timing analysis and retained separately for data-integrity review.
-
-## Final Analytic Framing
-After iterative cohort refinement and face-validity review, the study was finalized as an orbital/adnexal-dominant operative timing analysis. Emergent ocular cases were too sparse for stable primary modeled inference and were therefore retained for descriptive or sensitivity purposes only.
-
-## Primary Outcome and Model
-The primary reported adjusted analysis used a binary prolonged-delay endpoint defined as time to first qualifying ocular/orbital procedure greater than the cohort median of {med:.2f} hours. The final parsimonious multivariable logistic model included only structural workflow variables selected a priori after reviewer feedback:
-- age
-- Injury Severity Score
-- GCS motor score
-- hemorrhage-control intervention
-- angiography
-- mixed emergent-priority indicator
-
-## Sensitivity Analysis
-A sensitivity analysis modeled the log-transformed timing interval, defined as log(arrival-to-procedure hours + 1), using the same covariates.
-
-## Site Clustering
-A site variable was merged into the analytic dataset to evaluate the feasibility of cluster-robust analysis. Although site information was technically present, the distribution was highly imbalanced across the restricted analytic cohort, and cluster-robust inference was therefore not adopted as the primary reported model in this phase.
 """
     results=f"""# Updated Publication-Style Results (Final Parsimonious Model)
 
 ## Final Modeled Cohort
 The final restricted modeled cohort contained {len(df)} direct-arrival encounters from the locked primary timing dataset. The median time from arrival to first qualifying ocular/orbital procedure was {med:.2f} hours.
 
-## Final Parsimonious Logistic Model
-In the final parsimonious logistic model for prolonged delay, higher Injury Severity Score remained associated with greater odds of prolonged delay, whereas angiography showed a trend toward shorter delay but did not meet conventional statistical significance. Age retained a small inverse association with prolonged delay. GCS motor score, hemorrhage-control intervention, and mixed emergent-priority status were not strongly associated with prolonged delay in the final parsimonious specification.
-
-## Sensitivity Analysis
-In the sensitivity model using log-transformed elapsed hours, Injury Severity Score again showed a positive association with longer delay, while angiography remained directionally associated with shorter delay. These sensitivity findings were broadly consistent with the primary parsimonious model and support the overall workflow interpretation rather than suggesting a purely threshold-driven artifact.
-
-## Site Clustering Feasibility
-The restricted analytic cohort contained a highly imbalanced site distribution (997 vs 22 records across the two observed site values). Because this imbalance would make cluster-robust inference unstable, the final reported model in this phase remains unclustered and this limitation should be acknowledged explicitly in any manuscript submission.
 """
     (OUT/'updated_publication_methods_final.md').write_text(methods, encoding='utf-8')
     (OUT/'updated_publication_results_final.md').write_text(results, encoding='utf-8')
@@ -257,11 +229,10 @@ The restricted analytic cohort contained a highly imbalanced site distribution (
     # Document clustering note
     clustering_note=f"""# Final Clustering Feasibility Note
 
-A site identifier (`TQIPSITE`) was merged into the restricted primary timing cohort to evaluate cluster-robust modeling. The observed site distribution in the restricted cohort was:
+The observed site distribution in the restricted cohort was:
 - site value 1: {site_counts.get('1',0)} rows
 - site value 0: {site_counts.get('0',0)} rows
 
-Although cluster-robust estimation is technically possible in statsmodels, this imbalance is substantial enough that cluster-robust inference would likely be unstable and disproportionately driven by the dominant site group. Accordingly, cluster-robust standard errors were not adopted as the primary reported model in this final execution phase. This limitation should be stated explicitly in the supplement or discussion.
 """
     (DOC/'phase8_clustering_feasibility_note.md').write_text(clustering_note, encoding='utf-8')
 
@@ -284,7 +255,6 @@ Although cluster-robust estimation is technically possible in statsmodels, this 
         'run_timestamp':run_ts,
         'assumptions':assumptions,
         'issues':issues,
-        'final_recommendation':'Use the parsimonious logistic model as the primary adjusted analysis and the log-time model as a sensitivity analysis.',
         'median_delay_cutpoint_hours':med,
         'cohort_n_modeled':int(len(df)),
         'complete_case_n_logit':int(len(dfl)),
