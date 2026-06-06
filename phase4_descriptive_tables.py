@@ -4,9 +4,9 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from datetime import datetime
 
-PHASE3 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase3/outputs')
-PHASE35 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase35/outputs')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase4')
+PHASE3 = Path('/Users/___/Desktop/tqip_ocular_study_phase3/outputs')
+PHASE35 = Path('/Users/___/Desktop/tqip_ocular_study_phase35/outputs')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase4')
 OUT = WORK / 'outputs'
 LOG = WORK / 'logs'
 DOC = WORK / 'docs'
