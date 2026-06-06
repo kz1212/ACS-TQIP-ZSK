@@ -202,8 +202,6 @@ In the restricted model-ready cohort, the median age was {fmt_num(overall['numer
 ## Exploratory Modeling of Prolonged Delay
 Using a median-based prolonged-delay definition (> {median_cut:.2f} hours), the first-pass restricted multivariable model suggested that higher Injury Severity Score and AIS-supported injury classification were associated with greater odds of prolonged delay, whereas older age showed a small inverse association with prolonged delay. Specifically, the odds ratio for Injury Severity Score was {fmt_num(logit.get('odds_ratios',{}).get('iss'),3)} and the odds ratio for AIS support was {fmt_num(logit.get('odds_ratios',{}).get('ais_support_num'),3)}. These estimates should be interpreted cautiously as exploratory signals used to refine the final manuscript-level model specification.
 
-## Secondary Clinical Context
-Major systemic complications and in-hospital mortality were retained for descriptive context only. Because delayed ocular/orbital intervention in this dataset is likely to reflect competing injury priorities and survivorship effects rather than act as a direct causal driver of systemic deterioration, these secondary outcomes should not be interpreted causally in the current analysis phase.
 """
     (OUT / 'publication_results.md').write_text(results_text, encoding='utf-8')
 
