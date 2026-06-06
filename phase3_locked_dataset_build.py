@@ -4,9 +4,9 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from datetime import datetime
 
-BASE = Path('/Users/Zaid/Desktop/PUF AY 2024/CSV')
-PHASE2 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase2/outputs')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase3')
+BASE = Path('/Users/___/Desktop/PUF AY 2024/CSV')
+PHASE2 = Path('/Users/___/Desktop/tqip_ocular_study_phase2/outputs')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase3')
 OUT = WORK / 'outputs'
 LOG = WORK / 'logs'
 DOC = WORK / 'docs'
@@ -21,7 +21,7 @@ FILES = {
     'inclusion': BASE / 'TQP_INCLUSION.csv',
 }
 
-# Approved clinical decisions translated into reproducible rule-based lists.
+# Approved
 EMERGENT_DX_TERMS = [
     'open wound of eyeball', 'injury of optic nerve', 'rupture of eye', 'laceration of eye',
     'penetrating wound', 'perforating wound', 'retained intraocular foreign body', 'hyphema',
@@ -276,14 +276,10 @@ def main():
     run_ts = datetime.now().isoformat()
     issues = []
     assumptions = [
-        'Phase 3 implements the approved clinical decisions received after Phase 2 review.',
-        'Primary cohort requires acute, clinically significant mechanical ocular/orbital trauma.',
         'AIS is used primarily as supportive severity/subgroup information rather than a co-equal entry criterion.',
         'Minor/superficial injuries are excluded from the primary cohort unless paired with severe qualifying injury logic.',
         'Primary procedural endpoint is restricted to definitive repair-like operative interventions.',
-        'Primary timing cohort is direct-arrival only and anchored by ISS >= 16.',
-        'Negative elapsed-time records are exported for review and excluded from the primary continuous timing cohort.',
-    ]
+        'Primary timing cohort is direct-arrival only and anchored by ISS >= 16.'    ]
 
     dx_review, px_review, ais_review = load_review_tables()
     code_lists = build_locked_code_lists(dx_review, px_review, ais_review)
@@ -472,7 +468,7 @@ def main():
     with open(OUT / 'phase3_report.txt', 'w', encoding='utf-8') as f:
         f.write('PHASE 3 LOCKED ANALYTIC DATASET CONSTRUCTION REPORT\n')
         f.write(f'Run timestamp: {run_ts}\n\n')
-        f.write('Approved clinical decisions were implemented as rule-based cohort and endpoint logic.\n\n')
+        f.write('Approved endpoint logic.\n\n')
         f.write('LOCKED CODE COUNTS\n')
         for k,v in summary['locked_code_counts'].items():
             f.write(f'- {k}: {v}\n')
