@@ -44,11 +44,7 @@ def to_float(x):
 
 def main():
     run_ts = datetime.now().isoformat()
-    assumptions = [
-        'Phase 7 does not redefine the cohort; it prepares the next defensible execution steps based on reviewer feedback.',
-        'The primary study should remain a direct-arrival, ISS >= 16, orbital/adnexal-dominant timing study.',
-        'Statsmodels is an appropriate library for the final parsimonious regression and for cluster-robust standard errors if a site variable is merged.',
-    ]
+    assumptions = []
     issues = []
 
     primary = load_csv(PHASE3 / 'phase3_primary_timing_dataset.csv')
@@ -126,7 +122,7 @@ Review of the excluded records suggests that they are not random corruption but 
 
 These categories are most consistent with registration lag in critically injured patients moved rapidly through the trauma workflow, default midnight timestamps when procedural time detail is incomplete, day-boundary shifting or date inversion errors, and a smaller subset of severe data entry errors. 
 
-    clustering_text = """# Center Clustering Notes and Checks
+    clustering_text = """
 
 if __name__ == '__main__':
     main()
