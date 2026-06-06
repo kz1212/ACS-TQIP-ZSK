@@ -112,15 +112,13 @@ def main():
    
     neg_appendix = f"""# Negative Timing Data Integrity Appendix Text
 
-A total of {total_neg} encounters in the locked operable dataset demonstrated negative elapsed time from hospital arrival to first qualifying ocular/orbital procedure and were excluded from the primary timing analysis. Negative elapsed time is not logically interpretable as surgical delay and therefore these records were retained for audit only.
+A total of {total_neg} encounters in the locked operable dataset demonstrated negative elapsed time from hospital arrival to first qualifying ocular/orbital procedure and were excluded from the primary timing analysis. 
 
-Review of the excluded records suggests that they are not random corruption but instead reflect several recurring administrative and operational patterns. Using rule-based categorization of the excluded records, the anomalies were grouped as follows:
+Using rule-based categorization of the excluded records, the anomalies were grouped as follows:
 """
     for row in neg_summary_rows:
         neg_appendix += f"\n- **{row['category']}**: {row['n']} records ({row['pct']:.1f}%)"
     neg_appendix += """
-
-These categories are most consistent with registration lag in critically injured patients moved rapidly through the trauma workflow, default midnight timestamps when procedural time detail is incomplete, day-boundary shifting or date inversion errors, and a smaller subset of severe data entry errors. 
 
     clustering_text = """
 
