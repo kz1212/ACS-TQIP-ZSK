@@ -4,8 +4,8 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from datetime import datetime
 
-PHASE3 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase3/outputs')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase35')
+PHASE3 = Path('/Users/___/Desktop/tqip_ocular_study_phase3/outputs')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase35')
 OUT = WORK / 'outputs'
 LOG = WORK / 'logs'
 DOC = WORK / 'docs'
@@ -20,9 +20,7 @@ def main():
     run_ts = datetime.now().isoformat()
     issues = []
     assumptions = [
-        'Phase 3.5 is a face-validity and readiness review, not a modeling phase.',
-        'Primary goals are to inspect negative timing cases, first-procedure code plausibility, and stratum balance.',
-        'Recommendation will be based on safety and methodological defensibility rather than maximizing sample size.',
+        'Phase 3.5 is a face-validity and readiness review, not a modeling phase.'
     ]
 
     summary = json.loads((PHASE3 / 'phase3_summary.json').read_text())
@@ -65,7 +63,7 @@ def main():
         'transfer_counts': dict(neg_transfer_counts),
     }
 
-    # Locked dataset face-validity checks
+    # Locked dataset checks
     locked_strata = Counter(r['stratum'] for r in locked)
     primary_strata = Counter(r['stratum'] for r in primary)
     mortality_by_stratum = Counter()
@@ -108,21 +106,19 @@ def main():
     primary_n = len(primary)
 
     if emergent_n < 30:
-        issues.append('The emergent ocular operative stratum is very small, limiting stable stratum-specific modeling and suggesting either true rarity or an overly restrictive emergent codebook.')
+        issues.append('The emergent ocular operative stratum is very small, suggesting either true rarity or an overly restrictive emergent codebook.')
     if orbital_n > 0 and emergent_n > 0 and orbital_n / max(emergent_n,1) > 20:
-        issues.append('The final cohort is heavily dominated by orbital/adnexal cases relative to emergent ocular cases, reinforcing the need for separate reporting and possibly limiting emergent-focused inference.')
+        issues.append('The final cohort is heavily dominated by orbital/adnexal cases relative to emergent ocular cases.')
     if neg_n > 0:
-        issues.append('Negative elapsed-time cases remain present after locking; exclusion from the primary timing dataset was appropriate and should be retained.')
+        issues.append('Negative elapsed-time cases remain present after locking; exclusion from the primary timing dataset was appropriate.')
     if primary_n < 1000:
-        issues.append('Primary timing cohort size is modest after all restrictions, which may limit multivariable complexity.')
+        issues.append('Primary timing cohort size is modest after all restrictions, may limit complexity.')
 
     # Determine recommendation
-    # safest route: proceed only for orbital/adnexal-led primary timing analyses, keep emergent as descriptive/sensitivity unless refined.
     if emergent_n < 30:
         recommendation = 'proceed_with_restriction'
         recommendation_text = (
-            'Proceed to modeling only for the primary direct-arrival timing analysis with orbital/adnexal-dominant or pooled-but-stratified reporting, '
-            'while treating emergent ocular cases as descriptive or sensitivity-only unless the codebook is deliberately broadened after review.'
+            'Proceed to modeling only for the primary direct-arrival'
         )
     else:
         recommendation = 'proceed'
@@ -147,7 +143,7 @@ def main():
     with open(OUT / 'phase35_face_validity_report.txt', 'w', encoding='utf-8') as f:
         f.write('PHASE 3.5 FACE-VALIDITY REVIEW REPORT\n')
         f.write(f'Run timestamp: {run_ts}\n\n')
-        f.write('This review examined the locked Phase 3 outputs before modeling, focusing on negative timing cases, first-procedure face validity, and cohort balance.\n\n')
+        f.write('Examines locked Phase 3 outputs before modeling. \n\n')
         f.write('LOCKED STRATA\n')
         for k,v in locked_strata.items():
             f.write(f'- {k}: {v}\n')
