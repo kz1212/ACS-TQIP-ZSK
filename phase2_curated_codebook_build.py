@@ -4,8 +4,8 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from datetime import datetime
 
-BASE = Path('/Users/Zaid/Desktop/PUF AY 2024/CSV')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase2')
+BASE = Path('/Users/___/Desktop/PUF AY 2024/CSV')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase2')
 OUT = WORK / 'outputs'
 LOG = WORK / 'logs'
 DOC = WORK / 'docs'
