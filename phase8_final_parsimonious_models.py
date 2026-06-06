@@ -10,15 +10,15 @@ try:
 except Exception:
     HAVE_SM = False
 
-PHASE7 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase7/outputs')
-PHASE6 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase6/outputs')
-PHASE5 = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase5/outputs')
-WORK = Path('/Users/Zaid/Desktop/tqip_ocular_study_phase8')
+PHASE7 = Path('/Users/___/Desktop/tqip_ocular_study_phase7/outputs')
+PHASE6 = Path('/Users/___/Desktop/tqip_ocular_study_phase6/outputs')
+PHASE5 = Path('/Users/___/Desktop/tqip_ocular_study_phase5/outputs')
+WORK = Path('/Users/___/Desktop/tqip_ocular_study_phase8')
 OUT = WORK / 'outputs'
 RAW = WORK / 'raw_tables'
 DOC = WORK / 'docs'
 LOG = WORK / 'logs'
-FINAL = Path('/Users/Zaid/Desktop/tqip_ocular_final_submission_package')
+FINAL = Path('/Users/___/Desktop/tqip_ocular_final_submission_package')
 
 
 def load_csv(path):
